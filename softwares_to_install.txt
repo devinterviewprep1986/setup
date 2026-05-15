@@ -1,0 +1,73 @@
+Basic:
+------
+Nginx — nginx:alpine — Reverse proxy, routing, load balancing — Nginx
+PostgreSQL — postgres:16-alpine — Persistent storage, transactions, migrations — PostgreSQL
+Redis — redis:7-alpine — Caching, sessions, pub/sub — Redis
+RabbitMQ — rabbitmq:3-management-alpine — Async messaging, retries, DLQs — RabbitMQ
+MongoDB — mongo:7-jammy — Document DB, event storage, CQRS — MongoDB
+Apache Kafka — bitnami/kafka:latest — Event streaming, consumer groups, sagas — Apache Kafka
+Keycloak — quay.io/keycloak/keycloak:latest — OAuth2, JWT auth, RBAC — Keycloak
+Jaeger — jaegertracing/all-in-one:latest — Distributed tracing, request debugging — Jaeger
+Kong — kong:latest — API gateway, auth plugins, rate limiting, service mesh entrypoint — Kong
+Consul — hashicorp/consul — Service discovery, config, health checks — Consul
+Vault — hashicorp/vault — Secret management, encryption, dynamic credentials — Vault
+MailHog — mailhog/mailhog — Fake SMTP server for email testing — MailHog
+Portainer — portainer/portainer-ce — Docker management UI — Portainer
+SonarQube — sonarqube:lts-community — Static analysis and code quality — SonarQube
+Jenkins — jenkins/jenkins:lts — CI/CD pipelines — Jenkins
+pgAdmin — dpage/pgadmin4 — PostgreSQL UI/admin panel — pgAdmin
+Apache Cassandra — cassandra:latest — Distributed NoSQL database — Apache Cassandra
+LocalStack — localstack/localstack — Local AWS emulation for S3/SQS/Lambda/etc — LocalStack
+Fluent Bit — Lightweight log forwarding and processing — Fluent Bit
+OpenTelemetry — otel/opentelemetry-collector — Unified telemetry pipeline — OpenTelemetry
+Grafana — grafana/grafana:latest — Dashboards, monitoring, observability — Grafana
+Prometheus — prom/prometheus — Metrics collection and monitoring — Prometheus
+
+Observe:
+--------
+
+Elasticsearch — docker.elastic.co/elasticsearch/elasticsearch:8.13.4 — Full-text search, logs, analytics — Elasticsearch
+Kibana — docker.elastic.co/kibana/kibana:8.13.4 — Log exploration and dashboards — Kibana
+Loki — grafana/loki:latest — Lightweight centralized logging — Loki
+Tempo — grafana/tempo:latest — Scalable tracing backend alternative to Jaeger — Tempo
+Zipkin — openzipkin/zipkin — Alternative tracing system — Zipkin
+OpenSearch — Elasticsearch alternative — OpenSearch
+
+
+
+
+Infra:
+------
+etcd — quay.io/coreos/etcd — Distributed configuration and coordination — etcd
+Argo CD — quay.io/argoproj/argocd — GitOps deployment workflows — Argo CD
+Traefik — traefik:v3 — Dynamic ingress + automatic service discovery — Traefik
+Envoy — envoyproxy/envoy — Service mesh/data plane proxy — Envoy
+Kubernetes — kindest/node or k3s — Container orchestration, autoscaling, deployments, ingress — Kubernetes
+Helm — alpine/helm — Kubernetes package management and templating — Helm
+Istio — Service mesh, traffic routing, mTLS, resilience — Istio
+Linkerd — Lightweight service mesh alternative — Linkerd
+Crossplane — Infrastructure-as-code inside Kubernetes — Crossplane
+Terraform — Infrastructure provisioning and automation — Terraform
+OpenFGA — Relationship-based authorization (Google Zanzibar style) — OpenFGA
+OPA — Policy-as-code and authorization rules — OPA
+Falco — Runtime threat detection for containers — Falco
+LitmusChaos — Chaos testing and resilience validation — LitmusChaos
+
+Advanced:
+--------
+ClickHouse — clickhouse/clickhouse-server — High-performance analytics DB — ClickHouse
+Debezium — debezium/connect — CDC and event sourcing pipelines — Debezium
+KEDA — Event-based autoscaling for queues/Kafka — KEDA
+Backstage — Internal developer platform / service catalog — Backstage
+Temporal — Durable workflows and distributed orchestration — Temporal
+Airflow — Scheduled workflows and pipelines — Apache Airflow
+SeaweedFS — Lightweight distributed object/file storage — SeaweedFS
+MinIO — minio/minio — S3-compatible object storage for file uploads, backups, media storage — MinIO
+Vector — Unified logs/metrics/traces pipeline — Vector
+Apache ZooKeeper — bitnami/zookeeper:latest — Kafka coordination and distributed locking — Apache ZooKeeper
+Redpanda — Kafka-compatible streaming without ZooKeeper — Redpanda
+gRPC — High-performance inter-service communication — gRPC
+Buf — Protobuf schema management and linting — Buf
+Schema Registry — Kafka event schema governance — Confluent Schema Registry
+WireMock — Mock external services/APIs — WireMock
+NATS — nats:alpine — Lightweight messaging/event bus — NATS
