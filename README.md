@@ -103,28 +103,29 @@ docker-compose ps
 
 ###  Accessing Services
 Use the following URLs and credentials to access each service:
-| Service | URL | Credentials | Notes |
-| --- | --- | --- | --- |
-| Nginx | [http://localhost](http://localhost) | - | Reverse proxy |
-| Kong Admin | [http://localhost:8001](http://localhost:8001) | - | API Gateway Admin UI |
-| PostgreSQL | localhost:5432 | User: postgres, Pass: postgres | Use psql or pgAdmin |
-| pgAdmin | [http://localhost:5050](http://localhost:5050) | Email: admin@admin.com, Pass: admin | PostgreSQL UI |
-| MongoDB | localhost:27017 | User: root, Pass: root | Use MongoDB Compass or CLI |
-| Cassandra | localhost:9042 | - | Use cqlsh or DataStax DevCenter |
-| Redis | localhost:6379 | - | Use redis-cli or RedisInsight |
-| RabbitMQ | [http://localhost:15672](http://localhost:15672) | User: admin, Pass: admin | Management UI |
-| Kafka | localhost:9092 | - | Use kafka-console-producer/consumer |
-| Keycloak | [http://localhost:8080](http://localhost:8080) | Admin: admin, Pass: admin | Auth Server UI |
-| Vault | [http://localhost:8200](http://localhost:8200) | Root Token: root | Secrets Management UI |
-| Consul | [http://localhost:8500](http://localhost:8500) | - | Service Discovery UI |
-| Prometheus | [http://localhost:9090](http://localhost:9090) | - | Metrics UI |
-| Grafana | [http://localhost:3000](http://localhost:3000) | User: admin, Pass: admin | Dashboards UI |
-| Jaeger | [http://localhost:16686](http://localhost:16686) | - | Distributed Tracing UI |
-| MailHog | [http://localhost:8025](http://localhost:8025) | - | SMTP Testing UI |
-| Portainer | [http://localhost:9000](http://localhost:9000) | - | Docker Management UI |
-| SonarQube | [http://localhost:9001](http://localhost:9001) | User: admin, Pass: admin | Code Quality UI |
-| Jenkins | [http://localhost:8081](http://localhost:8081) | - (Check logs for initial password) | CI/CD UI |
-| LocalStack | [http://localhost:4566](http://localhost:4566) | - | AWS Emulation UI |
+| Service          | URL                                                                                                                 | Credentials                                       | Notes                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------- |
+| Nginx            | [http://localhost](http://localhost)                                                                                | -                                                 | Reverse proxy                   |
+| Kong             | [http://localhost:8000](http://localhost:8000) (proxy) / [http://localhost:8001](http://localhost:8001) (admin API) | -                                                 | Admin API is NOT a UI           |
+| PostgreSQL       | localhost:5432                                                                                                      | user: postgres / pass: postgres (if configured)   | No UI by default                |
+| pgAdmin          | [http://localhost:5050](http://localhost:5050)                                                                      | [admin@admin.com](mailto:admin@admin.com) / admin | PostgreSQL UI                   |
+| MongoDB          | localhost:27017                                                                                                     | usually none unless enabled                       | Auth disabled by default in dev |
+| Apache Cassandra | localhost:9042                                                                                                      | -                                                 | CQL shell / drivers only        |
+| Redis            | localhost:6379                                                                                                      | -                                                 | CLI / RedisInsight              |
+| RabbitMQ         | [http://localhost:15672](http://localhost:15672)                                                                    | guest/guest (NOT admin/admin by default)          | Management UI                   |
+| Apache Kafka     | localhost:9092                                                                                                      | -                                                 | No UI (use CLI/tools)           |
+| Keycloak         | [http://localhost:8080](http://localhost:8080)                                                                      | admin / admin (set via env)                       | Auth server UI                  |
+| HashiCorp Vault  | [http://localhost:8200](http://localhost:8200)                                                                      | root token set at init (not always “root”)        | Needs init + unseal             |
+| Consul           | [http://localhost:8500](http://localhost:8500)                                                                      | -                                                 | UI available                    |
+| Prometheus       | [http://localhost:9090](http://localhost:9090)                                                                      | -                                                 | Metrics UI                      |
+| Grafana          | [http://localhost:3000](http://localhost:3000)                                                                      | admin / admin (default)                           | Dashboards UI                   |
+| Jaeger           | [http://localhost:16686](http://localhost:16686)                                                                    | -                                                 | Tracing UI                      |
+| MailHog          | [http://localhost:8025](http://localhost:8025)                                                                      | -                                                 | SMTP testing UI                 |
+| Portainer        | [http://localhost:9000](http://localhost:9000)                                                                      | set on first login                                | Docker UI                       |
+| SonarQube        | [http://localhost:9000](http://localhost:9000) (often conflicts!)                                                   | admin / admin (first login forces change)         | ⚠ port conflict risk            |
+| Jenkins          | [http://localhost:8081](http://localhost:8081)                                                                      | initial password from logs                        | CI/CD UI                        |
+| LocalStack       | [http://localhost:4566](http://localhost:4566)                                                                      | -                                                 | AWS API endpoint                |
+
 
 ### Stopping the Stack
 
