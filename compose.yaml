@@ -1,0 +1,316 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${VOLUMES_BASE_PATH}/nginx/conf.d:/etc/nginx/conf.d
+      - ${VOLUMES_BASE_PATH}/nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - kong
+    networks:
+      - backend
+    restart: unless-stopped
+
+  kong:
+    image: kong:latest
+    container_name: kong
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: postgres
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kong
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    depends_on:
+      - postgres
+    networks:
+      - backend
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app_db
+    volumes:
+      - ${VOLUMES_BASE_PATH}/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - ${VOLUMES_BASE_PATH}/pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - backend
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7-jammy
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - ${VOLUMES_BASE_PATH}/mongo:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    volumes:
+      - ${VOLUMES_BASE_PATH}/cassandra:/var/lib/cassandra
+    ports:
+      - "9042:9042"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    command: redis-server --appendonly yes
+    volumes:
+      - ${VOLUMES_BASE_PATH}/redis:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - ${VOLUMES_BASE_PATH}/rabbitmq:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    environment:
+      KAFKA_CFG_NODE_ID: 0
+      KAFKA_CFG_PROCESS_ROLES: controller,broker
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:19092
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@kafka:19092
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+    volumes:
+      - ${VOLUMES_BASE_PATH}/kafka:/bitnami/kafka
+    ports:
+      - "9092:9092"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    volumes:
+      - ${VOLUMES_BASE_PATH}/keycloak:/opt/keycloak/data
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  vault:
+    image: hashicorp/vault
+    container_name: vault
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: root
+    volumes:
+      - ${VOLUMES_BASE_PATH}/vault:/vault/file
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - "8200:8200"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  consul:
+    image: hashicorp/consul
+    container_name: consul
+    command: consul agent -server -bootstrap-expect=1 -ui -client=0.0.0.0
+    volumes:
+      - ${VOLUMES_BASE_PATH}/consul:/consul/data
+    ports:
+      - "8500:8500"
+      - "8600:8600"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ${VOLUMES_BASE_PATH}/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ${VOLUMES_BASE_PATH}/grafana:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - backend
+    restart: unless-stopped
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    volumes:
+      - ${VOLUMES_BASE_PATH}/jaeger:/data
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  fluent-bit:
+    image: fluent/fluent-bit
+    container_name: fluent-bit
+    volumes:
+      - ${VOLUMES_BASE_PATH}/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+    ports:
+      - "24224:24224"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  otel-collector:
+    image: otel/opentelemetry-collector
+    container_name: otel-collector
+    volumes:
+      - ${VOLUMES_BASE_PATH}/otel-collector/config.yaml:/etc/otel-collector-config.yaml
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "8888:8888"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    volumes:
+      - ${VOLUMES_BASE_PATH}/mailhog:/mailhog/data
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    ports:
+      - "9000:9000"
+    volumes:
+      - ${VOLUMES_BASE_PATH}/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - backend
+    restart: unless-stopped
+
+  sonarqube:
+    image: sonarqube:lts-community
+    container_name: sonarqube
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: true
+    volumes:
+      - ${VOLUMES_BASE_PATH}/sonarqube/data:/opt/sonarqube/data
+      - ${VOLUMES_BASE_PATH}/sonarqube/extensions:/opt/sonarqube/extensions
+      - ${VOLUMES_BASE_PATH}/sonarqube/logs:/opt/sonarqube/logs
+    ports:
+      - "9001:9000"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    volumes:
+      - ${VOLUMES_BASE_PATH}/jenkins:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  localstack:
+    image: localstack/localstack
+    container_name: localstack
+    environment:
+      SERVICES: s3,sqs,lambda
+      DEBUG: "1"
+      DATA_DIR: /tmp/localstack/data
+    volumes:
+      - ${VOLUMES_BASE_PATH}/localstack:/tmp/localstack
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    networks:
+      - backend
+    restart: unless-stopped
+
+networks:
+  backend:
+    driver: bridge
